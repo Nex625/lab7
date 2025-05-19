@@ -20,7 +20,7 @@ jobs:
         uses: grafana/k6-action@v0.2.0
         with:
           filename: load-test.js
-          flags: --out prometheus=http://prometheus:9090/api/v1/write
+          flags: --out experimental-prometheus-rw=http://prometheus:9090/api/v1/write
 
       - name: Run k6 load test and save to JSON
         uses: grafana/k6-action@v0.2.0
