@@ -1,0 +1,35 @@
+name: k6 Performance Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  k6_load_test:
+    name: k6 Load Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run k6 with Prometheus output
+        uses: grafana/k6-action@v0.2.0
+        with:
+          filename: load-test.js
+          flags: --out prometheus=http://prometheus:9090/api/v1/write
+
+      - name: Run k6 load test and save to JSON
+        uses: grafana/k6-action@v0.2.0
+        with:
+          filename: load-test.js
+          flags: --out json=results.json
+
+      - name: Upload performance test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: k6-results
+          path: results.json
